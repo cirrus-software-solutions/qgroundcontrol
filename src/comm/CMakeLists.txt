@@ -42,9 +42,6 @@ add_library(comm
 	${EXTRA_SRC}
 )
 
-find_package(PythonLibs REQUIRED)
-include_directories(${PYTHON_INCLUDE_DIRS})
-
 target_link_libraries(comm
 	PUBLIC
 		qgc
@@ -54,8 +51,6 @@ target_link_libraries(comm
 		Qt5::TextToSpeech
 		Qt5::Widgets
 		qmdnsengine
-	PRIVATE
-		${PYTHON_LIBRARIES}
 )
 
 target_include_directories(comm INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
