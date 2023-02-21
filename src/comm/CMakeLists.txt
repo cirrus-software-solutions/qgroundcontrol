@@ -42,6 +42,9 @@ add_library(comm
 	${EXTRA_SRC}
 )
 
+find_package(PythonLibs 3.10 EXACT)
+include_directories(${PYTHON_INCLUDE_DIRS})
+
 target_link_libraries(comm
 	PUBLIC
 		qgc

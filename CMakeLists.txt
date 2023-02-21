@@ -155,8 +155,6 @@ if(NOT QT_MKSPEC MATCHES "winrt")
 	)
 endif()
 
-find_package(PythonLibs REQUIRED)
-
 # Sets the default flags for compilation and linking.
 include(CompileOptions)
 
@@ -170,8 +168,6 @@ include_directories(
 	libs/mavlink/include/mavlink/v2.0/common
 
 	libs/shapelib
-
-	${PYTHON_INCLUDE_DIRS}
 )
 
 add_subdirectory(libs)
@@ -208,7 +204,7 @@ else()
 	add_executable(QGroundControl ${QGC_RESOURCES})
 endif()
 
-target_link_libraries(QGroundControl PRIVATE qgc ${PYTHON_LIBRARIES})
+target_link_libraries(QGroundControl PRIVATE qgc)
 
 # Files/directories to install
 install(
