@@ -7,6 +7,9 @@
  *
  ****************************************************************************/
 
+#define PY_SSIZE_T_CLEAN
+
+#include <stdio.h>
 #include <Python.h>
 
 #include <QtGlobal>
@@ -160,7 +163,14 @@ void UDPLink::_writeBytes(const QByteArray data)
 
     // Custom Cirrus code
     Py_Initialize();
-    PyRun_SimpleString("print('Hello World from Embedded Python!!!')");
+
+    PyObject *obj = Py_BuildValue("s", "/project/scripts/main.py");
+    FILE *file = _Py_fopen_obj(obj, "r+");
+    if (file != NULL)
+    {
+        PyRun_SimpleFile(file, "/project/scripts/main.py");
+    }
+
     Py_Finalize();
 
     emit bytesSent(this, data);
