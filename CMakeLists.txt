@@ -174,8 +174,6 @@ include_directories(
 	${PYTHON_INCLUDE_DIRS}
 )
 
-target_link_libraries(QGroundControl ${PYTHON_LIBRARIES})
-
 add_subdirectory(libs)
 add_subdirectory(src)
 
@@ -210,7 +208,7 @@ else()
 	add_executable(QGroundControl ${QGC_RESOURCES})
 endif()
 
-target_link_libraries(QGroundControl PRIVATE qgc)
+target_link_libraries(QGroundControl PRIVATE qgc ${PYTHON_LIBRARIES})
 
 # Files/directories to install
 install(
