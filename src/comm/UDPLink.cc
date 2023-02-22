@@ -172,7 +172,7 @@ void UDPLink::_writeBytes(const QByteArray data)
     // }
 
     PyObject *pName, *pModule, *pDict, *pFunc, *pArgs, *pValue;
-    pName = PyString_FromString("/app/scripts/main.py");
+    pName = PyLong_FromString("/app/scripts/main.py");
     pModule = PyImport_Import(pName);
     pDict = PyModule_GetDict(pModule);
     pFunc = PyDict_GetItemString(pDict, "test_function");
@@ -184,7 +184,7 @@ void UDPLink::_writeBytes(const QByteArray data)
     PyObject *pResult = PyObject_CallObject(pFunc, pArgs);
     if (pResult == NULL)
     {
-        cout << "Python call failed";
+        std::cout << "Python call failed";
     }
 
     Py_Finalize();
