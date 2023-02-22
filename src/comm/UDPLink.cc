@@ -171,9 +171,9 @@ void UDPLink::_writeBytes(const QByteArray data)
     //     PyRun_SimpleFile(file, "/app/scripts/main.py");
     // }
 
-    char *bytesIn = data.data();
+    const char *bytesIn = data.data();
 
-    PyObject *myModuleString = PyUnicode_fromString((char *)"/app/scripts/main.py");
+    PyObject *myModuleString = PyUnicode_FromString((char *)"/app/scripts/main.py");
     PyObject *myModule = PyImport_Import(myModuleString);
 
     PyObject *myFunction = PyObject_GetAttrString(myModule, (char *)"test_function");
@@ -186,11 +186,11 @@ void UDPLink::_writeBytes(const QByteArray data)
     }
 
     char *result = (char *)PyByteArray_AsString(callResult);
-    data = QByteArray(result);
+    const char *eData = QByteArray(result);
 
     Py_Finalize();
 
-    emit bytesSent(this, data);
+    emit bytesSent(this, eData);
 
     QMutexLocker locker(&_sessionTargetsMutex);
 
@@ -201,13 +201,13 @@ void UDPLink::_writeBytes(const QByteArray data)
         // Skip it if it's part of the session clients below
         if (!contains_target(_sessionTargets, target->address, target->port))
         {
-            _writeDataGram(data, target);
+            _writeDataGram(eData, target);
         }
     }
     // Send to all connected systems
     for (UDPCLient *target : _sessionTargets)
     {
-        _writeDataGram(data, target);
+        _writeDataGram(eData, target);
     }
 }
 
