@@ -171,13 +171,14 @@ void UDPLink::_writeBytes(const QByteArray data)
     //     PyRun_SimpleFile(file, "/app/scripts/main.py");
     // }
 
-    const char *bytesIn = data.data();
+    // const char *bytesIn = data.data();
 
     PyObject *myModuleString = PyUnicode_FromString((char *)"/app/scripts/main.py");
     PyObject *myModule = PyImport_Import(myModuleString);
 
     PyObject *myFunction = PyObject_GetAttrString(myModule, (char *)"test_function");
-    PyObject *args = PyTuple_Pack(1, PyByteArray_FromStringAndSize(bytesIn, strlen(bytesIn)));
+    PyObject *args = PyTuple_Pack(1, PyByteArray_FromStringAndSize((char *)"test string hello!", strlen((char *)"test string hello!")));
+    // PyObject *args = PyTuple_Pack(1, PyByteArray_FromStringAndSize(bytesIn, strlen(bytesIn)));
 
     PyObject *callResult = PyObject_CallObject(myFunction, args);
     if (callResult == NULL)
@@ -185,8 +186,8 @@ void UDPLink::_writeBytes(const QByteArray data)
         std::cout << "Python call failed";
     }
 
-    char *result = (char *)PyByteArray_AsString(callResult);
-    const char *eData = QByteArray(result);
+    // char *result = (char *)PyByteArray_AsString(callResult);
+    // const char *eData = QByteArray(result);
 
     Py_Finalize();
 
