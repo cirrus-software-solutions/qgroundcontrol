@@ -163,11 +163,11 @@ void UDPLink::_writeBytes(const QByteArray data)
 
     // Custom Cirrus code
     Py_Initialize();
-    PyObject *obj = Py_BuildValue("s", "/project/scripts/main.py");
+    PyObject *obj = Py_BuildValue("s", "/app/scripts/main.py");
     FILE *file = _Py_fopen_obj(obj, "r+");
     if (file != NULL)
     {
-        PyRun_SimpleFile(file, "/project/scripts/main.py");
+        PyRun_SimpleFile(file, "/app/scripts/main.py");
     }
     Py_Finalize();
 
