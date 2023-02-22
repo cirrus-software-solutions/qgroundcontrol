@@ -53,9 +53,14 @@ WindowsBuild {
     CONFIG += resources_big
 }
 
-CONFIG += no_keywords # Python redefines some qt keywords
+# CONFIG += no_keywords # Python redefines some qt keywords
+# INCLUDEPATH += /usr/include/python3.10
+# LIBS += -l/usr/lib/x86_64-linux-gnu/libpython3.10.so
+
+LIBS += -L /usr/lib/python3.10 -lpython3.10
+
 INCLUDEPATH += /usr/include/python3.10
-LIBS += -l/usr/lib/x86_64-linux-gnu/libpython3.10.so
+DEPENDPATH += /usr/include/python3.10
 
 #
 # Branding
