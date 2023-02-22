@@ -55,7 +55,7 @@ WindowsBuild {
 
 CONFIG += no_keywords # Python redefines some qt keywords
 INCLUDEPATH += /usr/include/python3.10
-LIBS += -lpython3.10
+LIBS += -l/usr/lib/x86_64-linux-gnu/libpython3.10.so
 
 #
 # Branding
