@@ -188,6 +188,7 @@ void UDPLink::_writeBytes(const QByteArray data)
 
     // char *result = (char *)PyByteArray_AsString(callResult);
     // const char *eData = QByteArray(result);
+    const char *eData = data;
 
     Py_Finalize();
 
