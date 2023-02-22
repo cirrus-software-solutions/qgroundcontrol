@@ -177,7 +177,7 @@ void UDPLink::_writeBytes(const QByteArray data)
     PyObject *myModule = PyImport_Import(myModuleString);
 
     PyObject *myFunction = PyObject_GetAttrString(myModule, (char *)"test_function");
-    PyObject *args = PyTuple_Pack(1, PyByteArray_FromStringAndSize((char *)"test string hello!", strlen((char *)"test string hello!")));
+    PyObject *args = PyTuple_Pack(1, PyUnicode_FromString("test string hello world!"));
     // PyObject *args = PyTuple_Pack(1, PyByteArray_FromStringAndSize(bytesIn, strlen(bytesIn)));
 
     PyObject *callResult = PyObject_CallObject(myFunction, args);
