@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <Python.h>
+#include <string>
 
 #include <QtGlobal>
 #include <QTimer>
@@ -163,12 +164,29 @@ void UDPLink::_writeBytes(const QByteArray data)
 
     // Custom Cirrus code
     Py_Initialize();
-    PyObject *obj = Py_BuildValue("s", "/app/scripts/main.py");
-    FILE *file = _Py_fopen_obj(obj, "r+");
-    if (file != NULL)
+    // PyObject *obj = Py_BuildValue("s", "/app/scripts/main.py");
+    // FILE *file = _Py_fopen_obj(obj, "r+");
+    // if (file != NULL)
+    // {
+    //     PyRun_SimpleFile(file, "/app/scripts/main.py");
+    // }
+
+    PyObject *pName, *pModule, *pDict, *pFunc, *pArgs, *pValue;
+    pName = PyString_FromString("/app/scripts/main.py");
+    pModule = PyImport_Import(pName);
+    pDict = PyModule_GetDict(pModule);
+    pFunc = PyDict_GetItemString(pDict, "test_function");
+
+    pArgs = PyTuple_New(1);
+    pValue = PyString_FromLong(2);
+    PyTuple_SetItem(pArgs, 0, pValue);
+
+    PyObject *pResult = PyObject_CallObject(pFunc, pArgs);
+    if (pResult == NULL)
     {
-        PyRun_SimpleFile(file, "/app/scripts/main.py");
+        cout << "Python call failed";
     }
+
     Py_Finalize();
 
     emit bytesSent(this, data);
