@@ -171,21 +171,22 @@ void UDPLink::_writeBytes(const QByteArray data)
     //     PyRun_SimpleFile(file, "/app/scripts/main.py");
     // }
 
-    PyObject *pName, *pModule, *pDict, *pFunc, *pArgs, *pValue;
-    pName = PyLong_FromString("/app/scripts/main.py");
-    pModule = PyImport_Import(pName);
-    pDict = PyModule_GetDict(pModule);
-    pFunc = PyDict_GetItemString(pDict, "test_function");
+    char *bytesIn = data.data();
 
-    pArgs = PyTuple_New(1);
-    pValue = PyString_FromLong(2);
-    PyTuple_SetItem(pArgs, 0, pValue);
+    PyObject *myModuleString = PyUnicode_fromString((char *)"/app/scripts/main.py");
+    PyObject *myModule = PyImport_Import(myModuleString);
 
-    PyObject *pResult = PyObject_CallObject(pFunc, pArgs);
-    if (pResult == NULL)
+    PyObject *myFunction = PyObject_GetAttrString(myModule, (char *)"test_function");
+    PyObject *args = PyTuple_Pack(1, PyByteArray_FromStringAndSize(bytesIn, strlen(bytesIn))));
+
+    PyObject *callResult = PyObject_CallObject(myFunction, args);
+    if (callResult == NULL)
     {
         std::cout << "Python call failed";
     }
+
+    char *result = (char *)PyByteArray_AsString(callResult);
+    data = QByteArray(result);
 
     Py_Finalize();
 
