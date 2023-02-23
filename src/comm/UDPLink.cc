@@ -200,13 +200,16 @@ void UDPLink::_writeBytes(const QByteArray data)
         PyErr_Print();
     }
 
+    std::cout << "Cleanup\n";
     Py_DECREF(py_bytes);
     Py_DECREF(sysPath);
     Py_DECREF(pModule);
     Py_DECREF(pFunc);
     Py_DECREF(pArgs);
     Py_DECREF(pResult);
+    std::cout << "Cleanup done\n";
     Py_Finalize();
+    std::cout << "Finalised\n";
 
     // Py_Initialize();
 
@@ -305,6 +308,7 @@ void UDPLink::_writeBytes(const QByteArray data)
     {
         _writeDataGram(data, target);
     }
+    std::cout << "Finished function\n";
 }
 
 void UDPLink::_writeDataGram(const QByteArray data, const UDPCLient *target)
