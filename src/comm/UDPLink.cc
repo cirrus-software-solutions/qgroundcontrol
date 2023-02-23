@@ -166,7 +166,7 @@ void UDPLink::_writeBytes(const QByteArray data)
     Py_Initialize();
 
     PyObject *sysPath, *pModule, *pFunc, *pArgs, *pResult, *py_bytes;
-    unsigned char *result;
+    int result;
 
     sysPath = PySys_GetObject("path");
     PyList_Insert(sysPath, 0, PyUnicode_FromString("/app/scripts"));
@@ -178,9 +178,9 @@ void UDPLink::_writeBytes(const QByteArray data)
     }
     pFunc = PyObject_GetAttrString(pModule, "handle_binary");
 
-    const char *my_bytes = data.data();
-    int my_bytes_len = (int)strlen(my_bytes);
-    py_bytes = PyBytes_FromStringAndSize((const char *)my_bytes, my_bytes_len);
+    unsigned char my_bytes[] = {0x12, 0x34, 0x56, 0x78};
+    int my_bytes_len = sizeof(my_bytes) / sizeof(my_bytes[0]);
+    py_bytes = PyBytes_FromStringAndSize((char *)my_bytes, my_bytes_len);
 
     pArgs = PyTuple_New(1);
     PyTuple_SetItem(pArgs, 0, py_bytes);
@@ -188,7 +188,7 @@ void UDPLink::_writeBytes(const QByteArray data)
     if (PyCallable_Check(pFunc))
     {
         pResult = PyObject_CallObject(pFunc, pArgs);
-        result = (unsigned char *)PyBytes_AsString(pResult);
+        unsigned char *result = (unsigned char *)PyBytes_AsString(pResult);
 
         PyErr_Print();
         std::cout << "C++: ";
@@ -201,7 +201,6 @@ void UDPLink::_writeBytes(const QByteArray data)
         PyErr_Print();
     }
 
-    free(result);
     Py_DECREF(py_bytes);
     Py_DECREF(sysPath);
     Py_DECREF(pModule);
@@ -209,6 +208,54 @@ void UDPLink::_writeBytes(const QByteArray data)
     Py_DECREF(pArgs);
     Py_DECREF(pResult);
     Py_Finalize();
+    return 0;
+
+    // Py_Initialize();
+
+    // PyObject *sysPath, *pModule, *pFunc, *pArgs, *pResult, *py_bytes;
+    // unsigned char *result;
+
+    // sysPath = PySys_GetObject("path");
+    // PyList_Insert(sysPath, 0, PyUnicode_FromString("/app/scripts"));
+
+    // pModule = PyImport_ImportModule("mymodule");
+    // if (pModule == NULL)
+    // {
+    //     std::cout << "Failed to import Python module\n";
+    // }
+    // pFunc = PyObject_GetAttrString(pModule, "handle_binary");
+
+    // const char *my_bytes = data.data();
+    // int my_bytes_len = (int)strlen(my_bytes);
+    // py_bytes = PyBytes_FromStringAndSize((const char *)my_bytes, my_bytes_len);
+
+    // pArgs = PyTuple_New(1);
+    // PyTuple_SetItem(pArgs, 0, py_bytes);
+
+    // if (PyCallable_Check(pFunc))
+    // {
+    //     pResult = PyObject_CallObject(pFunc, pArgs);
+    //     result = (unsigned char *)PyBytes_AsString(pResult);
+
+    //     PyErr_Print();
+    //     std::cout << "C++: ";
+    //     std::cout << result;
+    //     std::cout << "\n";
+    // }
+    // else
+    // {
+    //     std::cout << "Python function uncallable\n";
+    //     PyErr_Print();
+    // }
+
+    // free(result);
+    // Py_DECREF(py_bytes);
+    // Py_DECREF(sysPath);
+    // Py_DECREF(pModule);
+    // Py_DECREF(pFunc);
+    // Py_DECREF(pArgs);
+    // Py_DECREF(pResult);
+    // Py_Finalize();
 
     // // Custom Cirrus code
     // Py_Initialize();
