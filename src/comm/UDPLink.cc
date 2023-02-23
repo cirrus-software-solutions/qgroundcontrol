@@ -166,7 +166,7 @@ void UDPLink::_writeBytes(const QByteArray data)
     Py_Initialize();
 
     PyObject *sysPath, *pModule, *pFunc, *pArgs, *pResult, *py_bytes;
-    int result;
+    unsigned char *result;
 
     sysPath = PySys_GetObject("path");
     PyList_Insert(sysPath, 0, PyUnicode_FromString("/app/scripts"));
@@ -178,9 +178,9 @@ void UDPLink::_writeBytes(const QByteArray data)
     }
     pFunc = PyObject_GetAttrString(pModule, "handle_binary");
 
-    char *my_bytes = data.data();
-    int my_bytes_len = sizeof(my_bytes) / sizeof(my_bytes[0]);
-    py_bytes = PyBytes_FromStringAndSize((char *)my_bytes, my_bytes_len);
+    const char *my_bytes = data.data();
+    int my_bytes_len = (int)strlen(mybytes);
+    py_bytes = PyBytes_FromStringAndSize((const char *)my_bytes, my_bytes_len);
 
     pArgs = PyTuple_New(1);
     PyTuple_SetItem(pArgs, 0, py_bytes);
@@ -188,7 +188,7 @@ void UDPLink::_writeBytes(const QByteArray data)
     if (PyCallable_Check(pFunc))
     {
         pResult = PyObject_CallObject(pFunc, pArgs);
-        unsigned char *result = (unsigned char *)PyBytes_AsString(pResult);
+        result = (unsigned char *)PyBytes_AsString(pResult);
 
         PyErr_Print();
         std::cout << "C++: ";
@@ -201,6 +201,7 @@ void UDPLink::_writeBytes(const QByteArray data)
         PyErr_Print();
     }
 
+    free(result);
     Py_DECREF(py_bytes);
     Py_DECREF(sysPath);
     Py_DECREF(pModule);
