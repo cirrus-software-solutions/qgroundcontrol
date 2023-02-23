@@ -207,7 +207,6 @@ void UDPLink::_writeBytes(const QByteArray data)
     Py_DECREF(pArgs);
     Py_DECREF(pResult);
     Py_Finalize();
-    return 0;
 
     // Py_Initialize();
 
