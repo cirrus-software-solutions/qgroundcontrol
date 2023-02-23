@@ -166,7 +166,6 @@ void UDPLink::_writeBytes(const QByteArray data)
     Py_Initialize();
 
     PyObject *sysPath, *pModule, *pFunc, *pArgs, *pResult, *py_bytes;
-    int result;
 
     sysPath = PySys_GetObject("path");
     PyList_Insert(sysPath, 0, PyUnicode_FromString("/app/scripts"));
