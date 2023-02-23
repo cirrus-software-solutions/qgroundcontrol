@@ -164,35 +164,83 @@ void UDPLink::_writeBytes(const QByteArray data)
 
     // Custom Cirrus code
     Py_Initialize();
-    // PyObject *obj = Py_BuildValue("s", "/app/scripts/main.py");
-    // FILE *file = _Py_fopen_obj(obj, "r+");
-    // if (file != NULL)
-    // {
-    //     PyRun_SimpleFile(file, "/app/scripts/main.py");
-    // }
 
-    // const char *bytesIn = data.data();
+    PyObject *sysPath, *pModule, *pFunc, *pArgs, *pResult, *py_bytes;
+    int result;
 
-    PyObject *myModuleString = PyUnicode_FromString((char *)"/app/scripts/main.py");
-    PyObject *myModule = PyImport_Import(myModuleString);
+    sysPath = PySys_GetObject("path");
+    PyList_Insert(sysPath, 0, PyUnicode_FromString("/app/scripts"));
 
-    PyObject *myFunction = PyObject_GetAttrString(myModule, (char *)"test_function");
-    PyObject *args = PyTuple_Pack(1, PyUnicode_FromString("test string hello world!"));
-    // PyObject *args = PyTuple_Pack(1, PyByteArray_FromStringAndSize(bytesIn, strlen(bytesIn)));
-
-    PyObject *callResult = PyObject_CallObject(myFunction, args);
-    if (callResult == NULL)
+    pModule = PyImport_ImportModule("mymodule");
+    if (pModule == NULL)
     {
-        std::cout << "Python call failed";
+        std::cout << "Failed to import Python module\n";
+    }
+    pFunc = PyObject_GetAttrString(pModule, "handle_binary");
+
+    char *my_bytes = data.data();
+    int my_bytes_len = sizeof(my_bytes) / sizeof(my_bytes[0]);
+    py_bytes = PyBytes_FromStringAndSize((char *)my_bytes, my_bytes_len);
+
+    pArgs = PyTuple_New(1);
+    PyTuple_SetItem(pArgs, 0, py_bytes);
+
+    if (PyCallable_Check(pFunc))
+    {
+        pResult = PyObject_CallObject(pFunc, pArgs);
+        unsigned char *result = (unsigned char *)PyBytes_AsString(pResult);
+
+        PyErr_Print();
+        std::cout << "C++: ";
+        std::cout << result;
+        std::cout << "\n";
+    }
+    else
+    {
+        std::cout << "Python function uncallable\n";
+        PyErr_Print();
     }
 
-    // char *result = (char *)PyByteArray_AsString(callResult);
-    // const QByteArray eData = QByteArray(result);
-    const QByteArray eData = data;
-
+    Py_DECREF(py_bytes);
+    Py_DECREF(sysPath);
+    Py_DECREF(pModule);
+    Py_DECREF(pFunc);
+    Py_DECREF(pArgs);
+    Py_DECREF(pResult);
     Py_Finalize();
 
-    emit bytesSent(this, eData);
+    // // Custom Cirrus code
+    // Py_Initialize();
+    // // PyObject *obj = Py_BuildValue("s", "/app/scripts/main.py");
+    // // FILE *file = _Py_fopen_obj(obj, "r+");
+    // // if (file != NULL)
+    // // {
+    // //     PyRun_SimpleFile(file, "/app/scripts/main.py");
+    // // }
+
+    // // const char *bytesIn = data.data();
+
+    // PyObject *myModuleString = PyUnicode_FromString((char *)"/app/scripts/main.py");
+    // PyObject *myModule = PyImport_Import(myModuleString);
+
+    // PyObject *myFunction = PyObject_GetAttrString(myModule, (char *)"test_function");
+    // PyObject *args = PyTuple_Pack(1, PyUnicode_FromString("test string hello world!"));
+    // // PyObject *args = PyTuple_Pack(1, PyByteArray_FromStringAndSize(bytesIn, strlen(bytesIn)));
+
+    // PyObject_CallObject(myFunction, args);
+    // // PyObject *callResult = PyObject_CallObject(myFunction, args);
+    // // if (callResult == NULL)
+    // // {
+    // //     std::cout << "Python call failed";
+    // // }
+
+    // // char *result = (char *)PyByteArray_AsString(callResult);
+    // // const QByteArray eData = QByteArray(result);
+    // // const QByteArray eData = data;
+
+    // Py_Finalize();
+
+    emit bytesSent(this, data);
 
     QMutexLocker locker(&_sessionTargetsMutex);
 
@@ -203,13 +251,13 @@ void UDPLink::_writeBytes(const QByteArray data)
         // Skip it if it's part of the session clients below
         if (!contains_target(_sessionTargets, target->address, target->port))
         {
-            _writeDataGram(eData, target);
+            _writeDataGram(data, target);
         }
     }
     // Send to all connected systems
     for (UDPCLient *target : _sessionTargets)
     {
-        _writeDataGram(eData, target);
+        _writeDataGram(data, target);
     }
 }
 
