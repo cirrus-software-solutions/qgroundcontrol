@@ -179,7 +179,7 @@ void UDPLink::_writeBytes(const QByteArray data)
     pFunc = PyObject_GetAttrString(pModule, "handle_binary");
 
     const char *my_bytes = data.data();
-    int my_bytes_len = (int)strlen(mybytes);
+    int my_bytes_len = (int)strlen(my_bytes);
     py_bytes = PyBytes_FromStringAndSize((const char *)my_bytes, my_bytes_len);
 
     pArgs = PyTuple_New(1);
