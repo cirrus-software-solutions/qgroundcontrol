@@ -225,7 +225,7 @@ void UDPLink::_writeBytes(const QByteArray data)
     Py_XDECREF(pArgs);
     Py_XDECREF(pResult);
     std::cout << "Cleanup done\n";
-    Py_Finalize();
+    Py_FinalizeEx(1);
     std::cout << "Finalised\n";
 
     emit bytesSent(this, data);
