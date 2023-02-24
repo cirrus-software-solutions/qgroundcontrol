@@ -167,7 +167,7 @@ void UDPLink::_writeBytes(const QByteArray data)
 
     // PyObject *sysPath, *pModule, *pFunc, *pArgs, *pResult, *py_bytes;
 
-    sysPath = PySys_GetObject("path");
+    PyObject *sysPath = PySys_GetObject("path");
     PyList_Insert(sysPath, 0, PyUnicode_FromString("/app/scripts"));
 
     // pModule = PyImport_ImportModule("mymodule");
@@ -225,6 +225,7 @@ void UDPLink::_writeBytes(const QByteArray data)
     // Py_XDECREF(pArgs);
     // Py_XDECREF(pResult);
     // std::cout << "Cleanup done\n";
+    Py_XDECREF(sysPath);
     Py_Finalize();
     std::cout << "Finalised\n";
 
