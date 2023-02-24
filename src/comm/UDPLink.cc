@@ -187,12 +187,29 @@ void UDPLink::_writeBytes(const QByteArray data)
     if (PyCallable_Check(pFunc))
     {
         pResult = PyObject_CallObject(pFunc, pArgs);
-        unsigned char *result = (unsigned char *)PyBytes_AsString(pResult);
+        if (PyErr_Occurred())
+        {
+            std::cout << "Error executing Python script\n";
+            PyErr_Print();
+        }
+        else
+        {
+            std::cout << "Call complete";
+            unsigned char *result = (unsigned char *)PyBytes_AsString(pResult);
+            std::cout << "Result received";
 
-        PyErr_Print();
-        std::cout << "C++: ";
-        std::cout << result;
-        std::cout << "\n";
+            if (PyErr_Occurred())
+            {
+                std::cout << "Error decoding result of Python script\n";
+                PyErr_Print();
+            }
+            else
+            {
+                std::cout << "C++: ";
+                std::cout << result;
+                std::cout << "\n";
+            }
+        }
     }
     else
     {
@@ -201,93 +218,15 @@ void UDPLink::_writeBytes(const QByteArray data)
     }
 
     std::cout << "Cleanup\n";
-    Py_DECREF(py_bytes);
-    Py_DECREF(sysPath);
-    Py_DECREF(pModule);
-    Py_DECREF(pFunc);
-    Py_DECREF(pArgs);
-    Py_DECREF(pResult);
+    Py_XDECREF(py_bytes);
+    Py_XDECREF(sysPath);
+    Py_XDECREF(pModule);
+    Py_XDECREF(pFunc);
+    Py_XDECREF(pArgs);
+    Py_XDECREF(pResult);
     std::cout << "Cleanup done\n";
     Py_Finalize();
     std::cout << "Finalised\n";
-
-    // Py_Initialize();
-
-    // PyObject *sysPath, *pModule, *pFunc, *pArgs, *pResult, *py_bytes;
-    // unsigned char *result;
-
-    // sysPath = PySys_GetObject("path");
-    // PyList_Insert(sysPath, 0, PyUnicode_FromString("/app/scripts"));
-
-    // pModule = PyImport_ImportModule("mymodule");
-    // if (pModule == NULL)
-    // {
-    //     std::cout << "Failed to import Python module\n";
-    // }
-    // pFunc = PyObject_GetAttrString(pModule, "handle_binary");
-
-    // const char *my_bytes = data.data();
-    // int my_bytes_len = (int)strlen(my_bytes);
-    // py_bytes = PyBytes_FromStringAndSize((const char *)my_bytes, my_bytes_len);
-
-    // pArgs = PyTuple_New(1);
-    // PyTuple_SetItem(pArgs, 0, py_bytes);
-
-    // if (PyCallable_Check(pFunc))
-    // {
-    //     pResult = PyObject_CallObject(pFunc, pArgs);
-    //     result = (unsigned char *)PyBytes_AsString(pResult);
-
-    //     PyErr_Print();
-    //     std::cout << "C++: ";
-    //     std::cout << result;
-    //     std::cout << "\n";
-    // }
-    // else
-    // {
-    //     std::cout << "Python function uncallable\n";
-    //     PyErr_Print();
-    // }
-
-    // free(result);
-    // Py_DECREF(py_bytes);
-    // Py_DECREF(sysPath);
-    // Py_DECREF(pModule);
-    // Py_DECREF(pFunc);
-    // Py_DECREF(pArgs);
-    // Py_DECREF(pResult);
-    // Py_Finalize();
-
-    // // Custom Cirrus code
-    // Py_Initialize();
-    // // PyObject *obj = Py_BuildValue("s", "/app/scripts/main.py");
-    // // FILE *file = _Py_fopen_obj(obj, "r+");
-    // // if (file != NULL)
-    // // {
-    // //     PyRun_SimpleFile(file, "/app/scripts/main.py");
-    // // }
-
-    // // const char *bytesIn = data.data();
-
-    // PyObject *myModuleString = PyUnicode_FromString((char *)"/app/scripts/main.py");
-    // PyObject *myModule = PyImport_Import(myModuleString);
-
-    // PyObject *myFunction = PyObject_GetAttrString(myModule, (char *)"test_function");
-    // PyObject *args = PyTuple_Pack(1, PyUnicode_FromString("test string hello world!"));
-    // // PyObject *args = PyTuple_Pack(1, PyByteArray_FromStringAndSize(bytesIn, strlen(bytesIn)));
-
-    // PyObject_CallObject(myFunction, args);
-    // // PyObject *callResult = PyObject_CallObject(myFunction, args);
-    // // if (callResult == NULL)
-    // // {
-    // //     std::cout << "Python call failed";
-    // // }
-
-    // // char *result = (char *)PyByteArray_AsString(callResult);
-    // // const QByteArray eData = QByteArray(result);
-    // // const QByteArray eData = data;
-
-    // Py_Finalize();
 
     emit bytesSent(this, data);
 
