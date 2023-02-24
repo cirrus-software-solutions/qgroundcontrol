@@ -175,7 +175,7 @@ void UDPLink::_writeBytes(const QByteArray data)
     {
         std::cout << "Failed to import Python module\n";
     }
-    // pFunc = PyObject_GetAttrString(pModule, "handle_binary");
+    PyObject *pFunc = PyObject_GetAttrString(pModule, "handle_binary");
 
     // unsigned char my_bytes[] = {0x12, 0x34, 0x56, 0x78};
     // int my_bytes_len = sizeof(my_bytes) / sizeof(my_bytes[0]);
@@ -221,7 +221,7 @@ void UDPLink::_writeBytes(const QByteArray data)
     // Py_XDECREF(py_bytes);
     Py_XDECREF(sysPath);
     Py_XDECREF(pModule);
-    // Py_XDECREF(pFunc);
+    Py_XDECREF(pFunc);
     // Py_XDECREF(pArgs);
     // Py_XDECREF(pResult);
     std::cout << "Cleanup done\n";
