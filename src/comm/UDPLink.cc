@@ -165,67 +165,67 @@ void UDPLink::_writeBytes(const QByteArray data)
     // Custom Cirrus code
     Py_Initialize();
 
-    PyObject *sysPath, *pModule, *pFunc, *pArgs, *pResult, *py_bytes;
+    // PyObject *sysPath, *pModule, *pFunc, *pArgs, *pResult, *py_bytes;
 
     sysPath = PySys_GetObject("path");
     PyList_Insert(sysPath, 0, PyUnicode_FromString("/app/scripts"));
 
-    pModule = PyImport_ImportModule("mymodule");
-    if (pModule == NULL)
-    {
-        std::cout << "Failed to import Python module\n";
-    }
-    pFunc = PyObject_GetAttrString(pModule, "handle_binary");
+    // pModule = PyImport_ImportModule("mymodule");
+    // if (pModule == NULL)
+    // {
+    //     std::cout << "Failed to import Python module\n";
+    // }
+    // pFunc = PyObject_GetAttrString(pModule, "handle_binary");
 
-    unsigned char my_bytes[] = {0x12, 0x34, 0x56, 0x78};
-    int my_bytes_len = sizeof(my_bytes) / sizeof(my_bytes[0]);
-    py_bytes = PyBytes_FromStringAndSize((char *)my_bytes, my_bytes_len);
+    // unsigned char my_bytes[] = {0x12, 0x34, 0x56, 0x78};
+    // int my_bytes_len = sizeof(my_bytes) / sizeof(my_bytes[0]);
+    // py_bytes = PyBytes_FromStringAndSize((char *)my_bytes, my_bytes_len);
 
-    pArgs = PyTuple_New(1);
-    PyTuple_SetItem(pArgs, 0, py_bytes);
+    // pArgs = PyTuple_New(1);
+    // PyTuple_SetItem(pArgs, 0, py_bytes);
 
-    if (PyCallable_Check(pFunc))
-    {
-        pResult = PyObject_CallObject(pFunc, pArgs);
-        if (PyErr_Occurred())
-        {
-            std::cout << "Error executing Python script\n";
-            PyErr_Print();
-        }
-        else
-        {
-            std::cout << "Call complete";
-            unsigned char *result = (unsigned char *)PyBytes_AsString(pResult);
-            std::cout << "Result received";
+    // if (PyCallable_Check(pFunc))
+    // {
+    //     pResult = PyObject_CallObject(pFunc, pArgs);
+    //     if (PyErr_Occurred())
+    //     {
+    //         std::cout << "Error executing Python script\n";
+    //         PyErr_Print();
+    //     }
+    //     else
+    //     {
+    //         std::cout << "Call complete";
+    //         unsigned char *result = (unsigned char *)PyBytes_AsString(pResult);
+    //         std::cout << "Result received";
 
-            if (PyErr_Occurred())
-            {
-                std::cout << "Error decoding result of Python script\n";
-                PyErr_Print();
-            }
-            else
-            {
-                std::cout << "C++: ";
-                std::cout << result;
-                std::cout << "\n";
-            }
-        }
-    }
-    else
-    {
-        std::cout << "Python function uncallable\n";
-        PyErr_Print();
-    }
+    //         if (PyErr_Occurred())
+    //         {
+    //             std::cout << "Error decoding result of Python script\n";
+    //             PyErr_Print();
+    //         }
+    //         else
+    //         {
+    //             std::cout << "C++: ";
+    //             std::cout << result;
+    //             std::cout << "\n";
+    //         }
+    //     }
+    // }
+    // else
+    // {
+    //     std::cout << "Python function uncallable\n";
+    //     PyErr_Print();
+    // }
 
-    std::cout << "Cleanup\n";
-    Py_XDECREF(py_bytes);
-    Py_XDECREF(sysPath);
-    Py_XDECREF(pModule);
-    Py_XDECREF(pFunc);
-    Py_XDECREF(pArgs);
-    Py_XDECREF(pResult);
-    std::cout << "Cleanup done\n";
-    Py_FinalizeEx();
+    // std::cout << "Cleanup\n";
+    // Py_XDECREF(py_bytes);
+    // Py_XDECREF(sysPath);
+    // Py_XDECREF(pModule);
+    // Py_XDECREF(pFunc);
+    // Py_XDECREF(pArgs);
+    // Py_XDECREF(pResult);
+    // std::cout << "Cleanup done\n";
+    Py_Finalize();
     std::cout << "Finalised\n";
 
     emit bytesSent(this, data);
