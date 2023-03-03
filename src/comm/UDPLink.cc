@@ -7,11 +7,12 @@
  *
  ****************************************************************************/
 
-#define PY_SSIZE_T_CLEAN
-
+#include <openssl/rsa.h>
+#include <openssl/pem.h>
+#include <openssl/err.h>
+#include <string.h>
+#include <iostream>
 #include <stdio.h>
-#include <Python.h>
-#include <string>
 
 #include <QtGlobal>
 #include <QTimer>
@@ -155,6 +156,36 @@ bool UDPLink::_isIpLocal(const QHostAddress &add)
     return false;
 }
 
+bool rsa_encrypt_and_sign(const char *message, size_t message_len, RSA *rsa_keypair, unsigned char *ciphertext)
+{
+    int max_ciphertext_len = RSA_size(rsa_keypair);
+    int ciphertext_len = RSA_public_encrypt(message_len, reinterpret_cast<const unsigned char *>(message), ciphertext, rsa_keypair, RSA_PKCS1_OAEP_PADDING);
+
+    if (ciphertext_len == -1)
+    {
+        std::cerr << "Error encrypting message: " << ERR_error_string(ERR_get_error(), nullptr) << endl;
+        return false;
+    }
+
+    return true;
+}
+
+const char *rsa_decrypt_and_verify(const unsigned char *ciphertext, int ciphertext_len, RSA *rsa_keypair)
+{
+    unsigned char *plaintext = new unsigned char[ciphertext_len];
+
+    int plaintext_len = RSA_private_decrypt(ciphertext_len, ciphertext, plaintext, rsa_keypair, RSA_PKCS1_OAEP_PADDING);
+
+    if (plaintext_len == -1)
+    {
+        std::cerr << "Error decrypting message: " << ERR_error_string(ERR_get_error(), nullptr) << endl;
+        delete[] plaintext;
+        return nullptr;
+    }
+
+    return (const char *)plaintext;
+}
+
 void UDPLink::_writeBytes(const QByteArray data)
 {
     if (!_socket)
@@ -163,70 +194,51 @@ void UDPLink::_writeBytes(const QByteArray data)
     }
 
     // Custom Cirrus code
-    Py_Initialize();
+    RSA *rsa_keypair = nullptr;
 
-    // PyObject *sysPath, *pModule, *pFunc, *pArgs, *pResult, *py_bytes;
-
-    PyObject *sysPath = PySys_GetObject("path");
-    PyList_Insert(sysPath, 0, PyUnicode_FromString("/app/scripts"));
-
-    PyObject *pModule = PyImport_ImportModule("mymodule");
-    if (pModule == NULL)
+    // Generate RSA keypair
+    BIGNUM *bne = BN_new();
+    unsigned int bits = 2048;
+    int ret = BN_set_word(bne, RSA_F4);
+    if (ret != 1)
     {
-        std::cout << "Failed to import Python module\n";
+        std::cout << "Error setting bne to RSA_F4" << endl;
+        return 1;
     }
-    PyObject *pFunc = PyObject_GetAttrString(pModule, "handle_binary");
 
-    // unsigned char my_bytes[] = {0x12, 0x34, 0x56, 0x78};
-    // int my_bytes_len = sizeof(my_bytes) / sizeof(my_bytes[0]);
-    // py_bytes = PyBytes_FromStringAndSize((char *)my_bytes, my_bytes_len);
+    rsa_keypair = RSA_new();
+    ret = RSA_generate_key_ex(rsa_keypair, bits, bne, NULL);
+    if (ret != 1)
+    {
+        std::cout << "Error generating RSA keypair" << endl;
+        return 1;
+    }
 
-    // pArgs = PyTuple_New(1);
-    // PyTuple_SetItem(pArgs, 0, py_bytes);
+    // Test message to encrypt and sign
+    const char *message = data.data() const;
 
-    // if (PyCallable_Check(pFunc))
-    // {
-    //     pResult = PyObject_CallObject(pFunc, pArgs);
-    //     if (PyErr_Occurred())
-    //     {
-    //         std::cout << "Error executing Python script\n";
-    //         PyErr_Print();
-    //     }
-    //     else
-    //     {
-    //         std::cout << "Call complete";
-    //         unsigned char *result = (unsigned char *)PyBytes_AsString(pResult);
-    //         std::cout << "Result received";
+    // Encrypt and sign message using RSA keypair
+    unsigned char ciphertext[RSA_size(rsa_keypair)];
+    bool success = rsa_encrypt_and_sign(message, strlen(message), rsa_keypair, ciphertext);
+    if (!success)
+    {
+        std::cout << "Error encrypting and signing message" << endl;
+        return 1;
+    }
 
-    //         if (PyErr_Occurred())
-    //         {
-    //             std::cout << "Error decoding result of Python script\n";
-    //             PyErr_Print();
-    //         }
-    //         else
-    //         {
-    //             std::cout << "C++: ";
-    //             std::cout << result;
-    //             std::cout << "\n";
-    //         }
-    //     }
-    // }
-    // else
-    // {
-    //     std::cout << "Python function uncallable\n";
-    //     PyErr_Print();
-    // }
+    // Decrypt and verify digital signature of ciphertext using RSA keypair
+    const char *plaintext = rsa_decrypt_and_verify(ciphertext, sizeof(ciphertext), rsa_keypair);
+    if (!strcmp(message, plaintext))
+    {
+        std::cout << "Error decrypting and verifying message" << endl;
+        return 1;
+    }
 
-    std::cout << "Cleanup\n";
-    // Py_XDECREF(py_bytes);
-    Py_XDECREF(sysPath);
-    Py_XDECREF(pModule);
-    Py_XDECREF(pFunc);
-    // Py_XDECREF(pArgs);
-    // Py_XDECREF(pResult);
-    std::cout << "Cleanup done\n";
-    Py_Finalize();
-    std::cout << "Finalised\n";
+    std::cout << "Plaintext: " << plaintext << endl;
+
+    // Free memory
+    RSA_free(rsa_keypair);
+    BN_free(bne);
 
     emit bytesSent(this, data);
 
