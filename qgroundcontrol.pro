@@ -61,8 +61,9 @@ WindowsBuild {
 # INCLUDEPATH += /usr/include/python3.10
 # DEPENDPATH += /usr/include/python3.10
 
-LIBS += -L /usr/lib/ssl -lopenssl
+# LIBS += -L /usr/lib/ssl -lopenssl
 
+LD_LIBRARY_PATH=/usr/include/openssl
 INCLUDEPATH += /usr/include/openssl
 DEPENDPATH += /usr/include/openssl
 
