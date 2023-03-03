@@ -158,7 +158,6 @@ bool UDPLink::_isIpLocal(const QHostAddress &add)
 
 bool rsa_encrypt_and_sign(const char *message, size_t message_len, RSA *rsa_keypair, unsigned char *ciphertext)
 {
-    int max_ciphertext_len = RSA_size(rsa_keypair);
     int ciphertext_len = RSA_public_encrypt(message_len, reinterpret_cast<const unsigned char *>(message), ciphertext, rsa_keypair, RSA_PKCS1_OAEP_PADDING);
 
     if (ciphertext_len == -1)
@@ -204,7 +203,6 @@ void UDPLink::_writeBytes(const QByteArray data)
     {
         std::cout << "Error setting bne to RSA_F4"
                   << "\n";
-        return 1;
     }
 
     rsa_keypair = RSA_new();
@@ -213,11 +211,10 @@ void UDPLink::_writeBytes(const QByteArray data)
     {
         std::cout << "Error generating RSA keypair"
                   << "\n";
-        return 1;
     }
 
     // Test message to encrypt and sign
-    const char *message = data.data() const;
+    const char *message = data.data();
 
     // Encrypt and sign message using RSA keypair
     unsigned char ciphertext[RSA_size(rsa_keypair)];
@@ -226,7 +223,6 @@ void UDPLink::_writeBytes(const QByteArray data)
     {
         std::cout << "Error encrypting and signing message"
                   << "\n";
-        return 1;
     }
 
     // Decrypt and verify digital signature of ciphertext using RSA keypair
@@ -235,7 +231,6 @@ void UDPLink::_writeBytes(const QByteArray data)
     {
         std::cout << "Error decrypting and verifying message"
                   << "\n";
-        return 1;
     }
 
     std::cout << "Plaintext: " << plaintext << "\n";
