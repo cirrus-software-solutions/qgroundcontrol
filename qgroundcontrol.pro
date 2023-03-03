@@ -57,10 +57,14 @@ WindowsBuild {
 # INCLUDEPATH += /usr/include/python3.10
 # LIBS += -l/usr/lib/x86_64-linux-gnu/libpython3.10.so
 
-LIBS += -L /usr/lib/python3.10 -lpython3.10
+# LIBS += -L /usr/lib/python3.10 -lpython3.10
+# INCLUDEPATH += /usr/include/python3.10
+# DEPENDPATH += /usr/include/python3.10
 
-INCLUDEPATH += /usr/include/python3.10
-DEPENDPATH += /usr/include/python3.10
+LIBS += -L /usr/lib/ssl -lopenssl
+
+INCLUDEPATH += /usr/include/openssl
+DEPENDPATH += /usr/include/openssl
 
 #
 # Branding
