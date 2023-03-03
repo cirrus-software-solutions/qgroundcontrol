@@ -163,7 +163,7 @@ bool rsa_encrypt_and_sign(const char *message, size_t message_len, RSA *rsa_keyp
 
     if (ciphertext_len == -1)
     {
-        std::cerr << "Error encrypting message: " << ERR_error_string(ERR_get_error(), nullptr) << endl;
+        std::cerr << "Error encrypting message: " << ERR_error_string(ERR_get_error(), nullptr) << "\n";
         return false;
     }
 
@@ -178,7 +178,7 @@ const char *rsa_decrypt_and_verify(const unsigned char *ciphertext, int cipherte
 
     if (plaintext_len == -1)
     {
-        std::cerr << "Error decrypting message: " << ERR_error_string(ERR_get_error(), nullptr) << endl;
+        std::cerr << "Error decrypting message: " << ERR_error_string(ERR_get_error(), nullptr) << "\n";
         delete[] plaintext;
         return nullptr;
     }
@@ -202,7 +202,8 @@ void UDPLink::_writeBytes(const QByteArray data)
     int ret = BN_set_word(bne, RSA_F4);
     if (ret != 1)
     {
-        std::cout << "Error setting bne to RSA_F4" << endl;
+        std::cout << "Error setting bne to RSA_F4"
+                  << "\n";
         return 1;
     }
 
@@ -210,7 +211,8 @@ void UDPLink::_writeBytes(const QByteArray data)
     ret = RSA_generate_key_ex(rsa_keypair, bits, bne, NULL);
     if (ret != 1)
     {
-        std::cout << "Error generating RSA keypair" << endl;
+        std::cout << "Error generating RSA keypair"
+                  << "\n";
         return 1;
     }
 
@@ -222,7 +224,8 @@ void UDPLink::_writeBytes(const QByteArray data)
     bool success = rsa_encrypt_and_sign(message, strlen(message), rsa_keypair, ciphertext);
     if (!success)
     {
-        std::cout << "Error encrypting and signing message" << endl;
+        std::cout << "Error encrypting and signing message"
+                  << "\n";
         return 1;
     }
 
@@ -230,11 +233,12 @@ void UDPLink::_writeBytes(const QByteArray data)
     const char *plaintext = rsa_decrypt_and_verify(ciphertext, sizeof(ciphertext), rsa_keypair);
     if (!strcmp(message, plaintext))
     {
-        std::cout << "Error decrypting and verifying message" << endl;
+        std::cout << "Error decrypting and verifying message"
+                  << "\n";
         return 1;
     }
 
-    std::cout << "Plaintext: " << plaintext << endl;
+    std::cout << "Plaintext: " << plaintext << "\n";
 
     // Free memory
     RSA_free(rsa_keypair);
