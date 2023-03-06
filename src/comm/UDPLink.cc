@@ -216,6 +216,8 @@ void UDPLink::_writeBytes(const QByteArray data)
     // Test message to encrypt and sign
     const char *message = data.data();
 
+    std::cout << "Input plaintext: " << message << "\n";
+
     // Encrypt and sign message using RSA keypair
     unsigned char ciphertext[RSA_size(rsa_keypair)];
     bool success = rsa_encrypt_and_sign(message, strlen(message), rsa_keypair, ciphertext);
@@ -233,7 +235,7 @@ void UDPLink::_writeBytes(const QByteArray data)
                   << "\n";
     }
 
-    std::cout << "Plaintext: " << plaintext << "\n";
+    std::cout << "Decrypted plaintext: " << plaintext << "\n";
 
     // Free memory
     RSA_free(rsa_keypair);
