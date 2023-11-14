@@ -69,7 +69,12 @@ linux {
             CONFIG += Androidx86Build
             DEFINES += __androidx86__
             message("Android x86 build")
-        } else {
+        } else:equals(ANDROID_TARGET_ARCH, x86_64)  {
+        CONFIG += Androidx64Build
+        DEFINES += __androidx64__
+        message("Android x64 build")
+    }
+        else {
             error("Unsupported Android architecture: $${ANDROID_TARGET_ARCH}")
         }
     } else {
