@@ -148,6 +148,7 @@ Item {
         id: videoControl
     }
 
+    // Picture in picture mode
     QGCPipOverlay {
         id:                     _pipOverlay
         anchors.left:           parent.left
@@ -158,7 +159,8 @@ Item {
         item2:                  QGroundControl.videoManager.hasVideo ? videoControl : null
         fullZOrder:             _fullItemZorder
         pipZOrder:              _pipItemZorder
-        show:                   !QGroundControl.videoManager.fullScreen &&
-                                    (videoControl.pipState.state === videoControl.pipState.pipState || mapControl.pipState.state === mapControl.pipState.pipState)
+        show:                   true
+//                                !QGroundControl.videoManager.fullScreen &&
+//                                                                    (videoControl.pipState.state === videoControl.pipState.pipState || mapControl.pipState.state === mapControl.pipState.pipState)
     }
 }
