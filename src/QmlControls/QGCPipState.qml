@@ -16,8 +16,6 @@ Item {
 
     readonly property string initState:             "init"
     readonly property string pipState:              "pip"
-    readonly property string dockedStateL:           "dockedL"
-    readonly property string dockedStateR:           "dockedR"
     readonly property string fullState:             "full"
     readonly property string windowState:           "window"
     readonly property string windowClosingState:    "windowClosing"
@@ -45,40 +43,6 @@ Item {
             PropertyChanges {
                 target: _clientControl
                 z:      pipOverlay.pipZOrder
-            }
-        },
-        // TODO: Add state(s) and anchors accordingly?
-        // Anchor needs to be half way on right side
-        State {
-            name: dockedStateL
-
-            AnchorChanges {
-                target: _clientControl
-                anchors.top: pipOverlay.parent.top
-                anchors.bottom: pipOverlay.parent.bottom
-                anchors.left:   pipOverlay.parent.left
-                anchors.right:  pipOverlay.parent.horizontalCenter
-            }
-
-            PropertyChanges {
-                target: _clientControl
-                z:      pipOverlay.fullZOrder
-            }
-        },
-        State {
-            name: dockedStateR
-
-            AnchorChanges {
-                target: _clientControl
-                anchors.top: pipOverlay.parent.top
-                anchors.bottom: pipOverlay.parent.bottom
-                anchors.left:   pipOverlay.parent.horizontalCenter
-                anchors.right:  pipOverlay.parent.right
-            }
-
-            PropertyChanges {
-                target: _clientControl
-                z:      pipOverlay.fullZOrder
             }
         },
         State {

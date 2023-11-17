@@ -83,13 +83,7 @@ Item {
             _fullItem = item2
             _pipOrWindowItem = item1
             item1IsFull = false
-        } else if (item1.pipState.state === item1.pipState.pipState) {
-            item1.pipState.state = item1.pipState.dockedStateL
-            item2.pipState.state = item2.pipState.dockedStateR
-            _fullItem = item2
-            _pipOrWindowItem = item1
-            item1IsFull = false
-        }
+        } 
         else {
             item1.pipState.state = item1.pipState.fullState
             item2.pipState.state = item2.pipState.pipState

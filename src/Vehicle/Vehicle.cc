@@ -723,9 +723,9 @@ void Vehicle::_mavlinkMessageReceived(LinkInterface* link, mavlink_message_t mes
     case MAVLINK_MSG_ID_VFR_HUD:
         _handleVfrHud(message);
         break;
-    case MAVLINK_MSG_ID_RANGEFINDER:
-        _handleRangefinder(message);
-        break;
+//    case MAVLINK_MSG_ID_RANGEFINDER:
+//        _handleRangefinder(message);
+//        break;
     case MAVLINK_MSG_ID_NAV_CONTROLLER_OUTPUT:
         _handleNavControllerOutput(message);
         break;
@@ -1008,12 +1008,12 @@ void Vehicle::_handleVfrHud(mavlink_message_t& message)
     _altitudeTuningFact.setRawValue(vfrHud.alt - _altitudeTuningOffset);
 }
 
-void Vehicle::_handleRangefinder(mavlink_message_t& message)
-{
-    mavlink_rangefinder_t rangefinder;
-    mavlink_msg_rangefinder_decode(&message, &rangefinder);
-    _rangeFinderDistFact.setRawValue(qIsNaN(rangefinder.distance) ? 0 : rangefinder.distance);
-}
+//void Vehicle::_handleRangefinder(mavlink_message_t& message)
+//{
+//    mavlink_rangefinder_t rangefinder;
+//    mavlink_msg_rangefinder_decode(&message, &rangefinder);
+//    _rangeFinderDistFact.setRawValue(qIsNaN(rangefinder.distance) ? 0 : rangefinder.distance);
+//}
 
 
 void Vehicle::_handleNavControllerOutput(mavlink_message_t& message)
