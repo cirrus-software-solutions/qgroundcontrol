@@ -24,6 +24,7 @@ Item {
 
     property var    item1:                  null    // Required
     property var    item2:                  null    // Optional, may come and go
+    property var    item3:                  null    // Optional, may come and go
     property string item1IsFullSettingsKey          // Settings key to save whether item1 was saved in full mode
     property real   fullZOrder:             0       // zOrder for items in full mode
     property real   pipZOrder:              1       // zOrder for items in pip mode
@@ -80,19 +81,23 @@ Item {
         if (item1.pipState.state === item1.pipState.fullState) {
             item1.pipState.state = item1.pipState.pipState
             item2.pipState.state = item2.pipState.fullState
+            item3.visible = false
             _fullItem = item2
             _pipOrWindowItem = item1
             item1IsFull = false
         } else if (item1.pipState.state === item1.pipState.pipState) {
             item1.pipState.state = item1.pipState.dockedStateL
             item2.pipState.state = item2.pipState.dockedStateR
+            item3.visible = false
             _fullItem = item2
             _pipOrWindowItem = item1
             item1IsFull = false
         }
         else if (item1.pipState.state === item1.pipState.dockedStateL) {
-            item1.pipState.state = item1.pipState.dockedStateR
-            item2.pipState.state = item2.pipState.dockedStateL
+                        item1.pipState.state = item1.pipState.dockedStateUR
+            item2.pipState.state = item2.pipState.dockedStateUL
+            item3.pipState.state = item3.pipState.dockedStateLower
+            item3.visible = true
             _fullItem = item2
             _pipOrWindowItem = item1
             item1IsFull = false
@@ -100,6 +105,7 @@ Item {
         else {
             item1.pipState.state = item1.pipState.fullState
             item2.pipState.state = item2.pipState.pipState
+            item3.visible = false
             _fullItem = item1
             _pipOrWindowItem = item2
             item1IsFull = true

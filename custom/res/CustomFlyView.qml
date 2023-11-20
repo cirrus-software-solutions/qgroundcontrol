@@ -144,6 +144,15 @@ Item {
         mapName:                "FlightDisplayView"
     }
 
+    FlyViewMap {
+        id:                     mapControl2
+        planMasterController:   _planController
+        rightPanelWidth:        ScreenTools.defaultFontPixelHeight * 9
+        pipMode:                !_mainWindowIsMap
+        toolInsets:             customOverlay.totalToolInsets
+        mapName:                "FlightDisplayView"
+    }
+
     FlyViewVideo {
         id: videoControl
     }
@@ -157,6 +166,7 @@ Item {
         item1IsFullSettingsKey: "MainFlyWindowIsMap"
         item1:                  mapControl
         item2:                  QGroundControl.videoManager.hasVideo ? videoControl : null
+        item3:                  mapControl2
         fullZOrder:             _fullItemZorder
         pipZOrder:              _pipItemZorder
         show:                   true
