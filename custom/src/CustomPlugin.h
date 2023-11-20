@@ -18,17 +18,9 @@
 
 #include <QTranslator>
 
-class CustomOptions;
 class CustomPlugin;
-class CustomSettings;
 
 Q_DECLARE_LOGGING_CATEGORY(CustomLog)
-
-class CustomOptions : public QGCOptions
-{
-public:
-    CustomOptions(CustomPlugin *, QObject *parent = nullptr);
-};
 
 class CustomPlugin : public QGCCorePlugin
 {
@@ -37,19 +29,6 @@ public:
     CustomPlugin(QGCApplication *app, QGCToolbox *toolbox);
     ~CustomPlugin();
 
-    // Overrides from QGCCorePlugin
-    QVariantList &settingsPages(void) final;
-    QGCOptions *options(void) final;
-    QString brandImageIndoor(void) const final;
-    QString brandImageOutdoor(void) const final;
-    QQmlApplicationEngine *createQmlApplicationEngine(QObject *parent) final;
-
-    // Overrides from QGCTool
-
 private:
-    void _addSettingsEntry(const QString &title, const char *qmlFile, const char *iconFile = nullptr);
-
-private:
-    CustomOptions *_options = nullptr;
     QVariantList _customSettingsList; // Not to be mixed up with QGCCorePlugin implementation
 };
