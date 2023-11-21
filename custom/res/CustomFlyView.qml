@@ -157,6 +157,22 @@ Item {
         id: videoControl
     }
 
+    Button {
+        text: "Swap Picture Mode"
+        onClicked: _pipOverlay._swapPip()
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        width: parent.width * 0.1
+        height: parent.height * 0.05
+        anchors.margins:    _toolsMargin
+        palette.buttonText: "white"
+        background: Rectangle {
+                color: parent.down ? "#fff291" :
+                        (parent.hovered ? "#585d83" : "#222222")
+                radius: 3
+        }
+    }
+
     // Picture in picture mode
     QGCPipOverlay {
         id:                     _pipOverlay
@@ -169,8 +185,8 @@ Item {
         item3:                  mapControl2
         fullZOrder:             _fullItemZorder
         pipZOrder:              _pipItemZorder
+        // show:                   !QGroundControl.videoManager.fullScreen && (videoControl.pipState.state === videoControl.pipState.pipState || mapControl.pipState.state === mapControl.pipState.pipState)
         show:                   true
-//                                !QGroundControl.videoManager.fullScreen &&
-//                                                                    (videoControl.pipState.state === videoControl.pipState.pipState || mapControl.pipState.state === mapControl.pipState.pipState)
+                               
     }
 }

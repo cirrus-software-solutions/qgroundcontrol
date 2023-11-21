@@ -20,7 +20,7 @@ Item {
     width:      _pipSize
     height:     _pipSize * (9/16)
     z:          pipZOrder + 1
-    visible:    item2 && item2.pipState !== item2.pipState.window && show
+    visible:    item2 && item1.pipState.state === item1.pipState.pipState || item2.pipState.state === item2.pipState.pipState && show
 
     property var    item1:                  null    // Required
     property var    item2:                  null    // Optional, may come and go
@@ -115,7 +115,7 @@ Item {
 
     function _setPipIsExpanded(isExpanded) {
         QGroundControl.saveBoolGlobalSetting(_pipExpandedSettingsKey, isExpanded)
-        _isExpanded = isExpanded
+        _isExpanded = isExpanded 
         if (_pipOrWindowItem) {
             _pipOrWindowItem.visible = isExpanded
         }
