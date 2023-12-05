@@ -88,7 +88,6 @@ Item {
             AnchorChanges {
                 target: _clientControl
                 anchors.top: pipOverlay.parent.top
-                anchors.bottom: pipOverlay.parent.verticalCenter
                 anchors.left:   pipOverlay.parent.left
                 anchors.right:  pipOverlay.parent.horizontalCenter
             }
@@ -96,6 +95,8 @@ Item {
             PropertyChanges {
                 target: _clientControl
                 z:      pipOverlay.fullZOrder
+                anchors.margins: 5
+                height: pipOverlay.parent.height * 0.6
             }
         },
         State {
@@ -104,7 +105,6 @@ Item {
             AnchorChanges {
                 target: _clientControl
                 anchors.top: pipOverlay.parent.top
-                anchors.bottom: pipOverlay.parent.verticalCenter
                 anchors.left:   pipOverlay.parent.horizontalCenter
                 anchors.right:  pipOverlay.parent.right
             }
@@ -112,14 +112,16 @@ Item {
             PropertyChanges {
                 target: _clientControl
                 z:      pipOverlay.fullZOrder
+                anchors.margins: 5
+                height: pipOverlay.parent.height * 0.6
             }
         },
-                State {
+        State {
             name: dockedStateLower
 
             AnchorChanges {
                 target: _clientControl
-                anchors.top: pipOverlay.parent.verticalCenter
+                // anchors.top: pipOverlay.parent.verticalCenter
                 anchors.bottom: pipOverlay.parent.bottom
                 anchors.left:   pipOverlay.parent.left
                 anchors.right:  pipOverlay.parent.right
@@ -128,6 +130,8 @@ Item {
             PropertyChanges {
                 target: _clientControl
                 z:      pipOverlay.fullZOrder
+                height: pipOverlay.parent.height * 0.38
+                anchors.topMargin: 5
             }
         },
         State {

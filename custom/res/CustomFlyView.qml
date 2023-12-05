@@ -74,6 +74,7 @@ Item {
         bottomEdgeLeftInset:    _pipOverlay.visible ? parent.height - _pipOverlay.y : 0
     }
 
+    // This contains all the other widgets 
     FlyViewWidgetLayer {
         id:                     widgetLayer
         anchors.top:            parent.top
@@ -144,13 +145,236 @@ Item {
         mapName:                "FlightDisplayView"
     }
 
-    FlyViewMap {
+    Rectangle {
         id:                     mapControl2
-        planMasterController:   _planController
-        rightPanelWidth:        ScreenTools.defaultFontPixelHeight * 9
-        pipMode:                !_mainWindowIsMap
-        toolInsets:             customOverlay.totalToolInsets
-        mapName:                "FlightDisplayView"
+        property bool pipMode:                !_mainWindowIsMap
+        color: "white"
+        property Item pipState: _pipState
+        QGCPipState {
+        id:         _pipState
+        pipOverlay: _pipOverlay
+        isDark:     _isFullWindowItemDark
+        }
+        Rectangle {
+            id: leftPanel
+            anchors.leftMargin: 5
+            anchors.rightMargin: 5
+            anchors.bottomMargin: 5
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            width: parent.width * 0.3
+            color: "#333333"
+
+            Rectangle {
+                width: parent.width
+                height: 30
+                color: "#222222"
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "Title"
+                    color: "white"
+                    font.bold: true
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+
+                    }
+                }
+            }
+
+            Rectangle {
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    top: parent.top
+                    bottom: parent.bottom
+                    margins: 30
+                }
+                color: "#333333"
+
+                Item {
+                    anchors.fill: parent
+                    Text {
+                        anchors.centerIn: parent
+                        text: "Dynamic content"
+                        color: "white"
+                    }
+                }
+            }
+        }
+
+        Rectangle {
+            id: centerPanel
+            anchors.leftMargin: 5
+            anchors.rightMargin: 5
+            anchors.bottomMargin: 5
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.left: leftPanel.right
+            anchors.right: rightPanel.left
+            width: parent.width * 0.3
+            color: "#333333"
+
+
+            Rectangle {
+                width: parent.width
+                height: 30
+                color: "#222222"
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "Flight Info"
+                    color: "white"
+                    font.bold: true
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+
+                    }
+                }
+            }
+
+            Rectangle {
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    top: parent.top
+                    bottom: parent.bottom
+                    margins: 30
+                }
+                color: "#333333"
+
+                Item {
+                    anchors.fill: parent
+                TelemetryValuesBar {
+        id:                 telemetryPanel
+        x:                  recalcXPosition()
+        anchors.margins:    _toolsMargin
+        // visible: false
+
+        // States for custom layout support
+        states: [
+            State {
+                name: "bottom"
+                when: telemetryPanel.bottomMode
+
+                AnchorChanges {
+                    target: telemetryPanel
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                }
+
+                PropertyChanges {
+                    target: telemetryPanel
+                    x: recalcXPosition()
+                }
+            },
+
+            State {
+                name: "right-video"
+                when: !telemetryPanel.bottomMode && photoVideoControl.visible
+
+                AnchorChanges {
+                    target: telemetryPanel
+                    anchors.top: photoVideoControl.bottom
+                    anchors.bottom: undefined
+                    anchors.right: parent.right
+                    anchors.verticalCenter: undefined
+                }
+            },
+
+            State {
+                name: "right-novideo"
+                when: !telemetryPanel.bottomMode && !photoVideoControl.visible
+
+                AnchorChanges {
+                    target: telemetryPanel
+                    anchors.top: undefined
+                    anchors.bottom: undefined
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+        ]
+
+        function recalcXPosition() {
+            // First try centered
+            var halfRootWidth   = _root.width / 2
+            var halfPanelWidth  = telemetryPanel.width / 2
+            var leftX           = (halfRootWidth - halfPanelWidth) - _toolsMargin
+            var rightX          = (halfRootWidth + halfPanelWidth) + _toolsMargin
+            if (leftX >= parentToolInsets.leftEdgeBottomInset || rightX <= parentToolInsets.rightEdgeBottomInset ) {
+                // It will fit in the horizontalCenter
+                return halfRootWidth - halfPanelWidth
+            } else {
+                // Anchor to left edge
+                return parentToolInsets.leftEdgeBottomInset + _toolsMargin
+            }
+        }
+    }
+                }
+            }
+        }
+
+        Rectangle {
+            id: rightPanel
+            anchors.leftMargin: 5
+            anchors.rightMargin: 5
+            anchors.bottomMargin: 5
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            width: parent.width * 0.3
+            anchors.right: parent.right
+            color: "#333333"
+
+            Rectangle {
+                width: parent.width
+                height: 30
+                color: "#222222"
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "Title"
+                    color: "white"
+                    font.bold: true
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+
+                    }
+                }
+            }
+
+            Rectangle {
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    top: parent.top
+                    bottom: parent.bottom
+                    margins: 30
+                }
+                color: "#333333"
+
+                Item {
+                    anchors.fill: parent
+                    Text {
+                        anchors.centerIn: parent
+                        text: "Dynamic content"
+                        color: "white"
+                    }
+                }
+            }
+        }
+
+
     }
 
     FlyViewVideo {
