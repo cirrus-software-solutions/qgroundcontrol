@@ -1,0 +1,4 @@
+        <file alias="QGroundControl/FlightDisplay/FlyView.qml">src/FlightDisplay/FlyView.qml</file>
+        <file alias="QGroundControl/Controls/QGCPipState.qml">src/QmlControls/QGCPipState.qml</file>
+        <file alias="QGroundControl/Controls/QGCPipOverlay.qml">src/QmlControls/QGCPipOverlay.qml</file>
+
