@@ -20,7 +20,7 @@ CUSTOM_QGC_VERSION = $${CUSTOM_QGC_VER_MAJOR}.$${CUSTOM_QGC_VER_MINOR}.$${CUSTOM
 DEFINES -= APP_VERSION_STR=\"\\\"$$APP_VERSION_STR\\\"\"
 DEFINES += APP_VERSION_STR=\"\\\"$$CUSTOM_QGC_VERSION\\\"\"
 
-message(CSS QGC Version: $${CUSTOM_QGC_VERSION})
+message(Custom QGC Version: $${CUSTOM_QGC_VERSION})
 
 # Branding
 
@@ -28,18 +28,18 @@ DEFINES += CUSTOMHEADER=\"\\\"CustomPlugin.h\\\"\"
 DEFINES += CUSTOMCLASS=CustomPlugin
 
 TARGET   = CustomQGroundControl
-DEFINES += QGC_APPLICATION_NAME='"\\\"CSS QGroundControl\\\""'
+DEFINES += QGC_APPLICATION_NAME='"\\\"Custom QGroundControl\\\""'
 
 DEFINES += QGC_ORG_NAME=\"\\\"qgroundcontrol.org\\\"\"
 DEFINES += QGC_ORG_DOMAIN=\"\\\"org.qgroundcontrol\\\"\"
 
-QGC_APP_NAME        = "CSS QGroundControl"
-QGC_BINARY_NAME     = "CSSQGroundControl"
-QGC_ORG_NAME        = "CSS"
-QGC_ORG_DOMAIN      = "org.css"
-QGC_ANDROID_PACKAGE = "org.css.qgroundcontrol"
-QGC_APP_DESCRIPTION = "CSS QGroundControl"
-QGC_APP_COPYRIGHT   = "Copyright (C) 2023 QGroundControl Development Team. All rights reserved."
+# TODO: Figure out why this can't be our own custom information
+QGC_APP_NAME        = "Custom QGroundControl"
+QGC_BINARY_NAME     = "CustomQGroundControl"
+QGC_ORG_NAME        = "Custom"
+QGC_ORG_DOMAIN      = "org.custom"
+QGC_ANDROID_PACKAGE = "org.custom.qgroundcontrol"
+QGC_APP_DESCRIPTION = "Custom QGroundControl"QGC_APP_COPYRIGHT   = "Copyright (C) 2023 QGroundControl Development Team. All rights reserved."
 
 # Our own, custom resources
 RESOURCES += \

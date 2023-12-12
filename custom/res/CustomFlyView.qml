@@ -157,13 +157,9 @@ Item {
         }
         Rectangle {
             id: leftPanel
-            anchors.leftMargin: 5
-            anchors.rightMargin: 5
-            anchors.bottomMargin: 5
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            anchors.left: parent.left
-            width: parent.width * 0.3
+            width: parent.width /3 - 10
+            height: parent.height-1
+            x: 5
             color: "#333333"
 
             Rectangle {
@@ -209,14 +205,9 @@ Item {
 
         Rectangle {
             id: centerPanel
-            anchors.leftMargin: 5
-            anchors.rightMargin: 5
-            anchors.bottomMargin: 5
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            anchors.left: leftPanel.right
-            anchors.right: rightPanel.left
-            width: parent.width * 0.3
+            width: parent.width /3 -10
+            height: parent.height-1
+            x: parent.width /3 + 5
             color: "#333333"
 
 
@@ -253,84 +244,80 @@ Item {
                 Item {
                     anchors.fill: parent
                 TelemetryValuesBar {
-        id:                 telemetryPanel
-        x:                  recalcXPosition()
-        anchors.margins:    _toolsMargin
-        // visible: false
+                    id:                 telemetryPanel
+                    x:                  recalcXPosition()
+                    anchors.margins:    _toolsMargin
+                    // visible: false
 
-        // States for custom layout support
-        states: [
-            State {
-                name: "bottom"
-                when: telemetryPanel.bottomMode
+                    // States for custom layout support
+                    states: [
+                        State {
+                            name: "bottom"
+                            when: telemetryPanel.bottomMode
 
-                AnchorChanges {
-                    target: telemetryPanel
-                    anchors.left: parent.left
-                    anchors.right: parent.right
+                            AnchorChanges {
+                                target: telemetryPanel
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                            }
+
+                            PropertyChanges {
+                                target: telemetryPanel
+                                x: recalcXPosition()
+                            }
+                        },
+
+                        State {
+                            name: "right-video"
+                            when: !telemetryPanel.bottomMode && photoVideoControl.visible
+
+                            AnchorChanges {
+                                target: telemetryPanel
+                                anchors.top: photoVideoControl.bottom
+                                anchors.bottom: undefined
+                                anchors.right: parent.right
+                                anchors.verticalCenter: undefined
+                            }
+                        },
+
+                        State {
+                            name: "right-novideo"
+                            when: !telemetryPanel.bottomMode && !photoVideoControl.visible
+
+                            AnchorChanges {
+                                target: telemetryPanel
+                                anchors.top: undefined
+                                anchors.bottom: undefined
+                                anchors.right: parent.right
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                        }
+                    ]
+
+                    function recalcXPosition() {
+                        // First try centered
+                        var halfRootWidth   = _root.width / 2
+                        var halfPanelWidth  = telemetryPanel.width / 2
+                        var leftX           = (halfRootWidth - halfPanelWidth) - _toolsMargin
+                        var rightX          = (halfRootWidth + halfPanelWidth) + _toolsMargin
+                        if (leftX >= parentToolInsets.leftEdgeBottomInset || rightX <= parentToolInsets.rightEdgeBottomInset ) {
+                            // It will fit in the horizontalCenter
+                            return halfRootWidth - halfPanelWidth
+                        } else {
+                            // Anchor to left edge
+                            return parentToolInsets.leftEdgeBottomInset + _toolsMargin
+                        }
+                    }
                 }
-
-                PropertyChanges {
-                    target: telemetryPanel
-                    x: recalcXPosition()
-                }
-            },
-
-            State {
-                name: "right-video"
-                when: !telemetryPanel.bottomMode && photoVideoControl.visible
-
-                AnchorChanges {
-                    target: telemetryPanel
-                    anchors.top: photoVideoControl.bottom
-                    anchors.bottom: undefined
-                    anchors.right: parent.right
-                    anchors.verticalCenter: undefined
-                }
-            },
-
-            State {
-                name: "right-novideo"
-                when: !telemetryPanel.bottomMode && !photoVideoControl.visible
-
-                AnchorChanges {
-                    target: telemetryPanel
-                    anchors.top: undefined
-                    anchors.bottom: undefined
-                    anchors.right: parent.right
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-            }
-        ]
-
-        function recalcXPosition() {
-            // First try centered
-            var halfRootWidth   = _root.width / 2
-            var halfPanelWidth  = telemetryPanel.width / 2
-            var leftX           = (halfRootWidth - halfPanelWidth) - _toolsMargin
-            var rightX          = (halfRootWidth + halfPanelWidth) + _toolsMargin
-            if (leftX >= parentToolInsets.leftEdgeBottomInset || rightX <= parentToolInsets.rightEdgeBottomInset ) {
-                // It will fit in the horizontalCenter
-                return halfRootWidth - halfPanelWidth
-            } else {
-                // Anchor to left edge
-                return parentToolInsets.leftEdgeBottomInset + _toolsMargin
-            }
-        }
-    }
                 }
             }
         }
 
         Rectangle {
             id: rightPanel
-            anchors.leftMargin: 5
-            anchors.rightMargin: 5
-            anchors.bottomMargin: 5
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            width: parent.width * 0.3
-            anchors.right: parent.right
+            width: parent.width /3 -10
+            height: parent.height -1
+            x: parent.width *2 /3 + 5
             color: "#333333"
 
             Rectangle {

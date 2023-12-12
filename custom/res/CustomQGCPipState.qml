@@ -95,7 +95,7 @@ Item {
             PropertyChanges {
                 target: _clientControl
                 z:      pipOverlay.fullZOrder
-                anchors.margins: 5
+                anchors.margins: 1
                 height: pipOverlay.parent.height * 0.6
             }
         },
@@ -112,7 +112,7 @@ Item {
             PropertyChanges {
                 target: _clientControl
                 z:      pipOverlay.fullZOrder
-                anchors.margins: 5
+                anchors.margins: 1
                 height: pipOverlay.parent.height * 0.6
             }
         },
@@ -130,8 +130,8 @@ Item {
             PropertyChanges {
                 target: _clientControl
                 z:      pipOverlay.fullZOrder
-                height: pipOverlay.parent.height * 0.38
-                anchors.topMargin: 5
+                height: pipOverlay.parent.height * 0.39
+                anchors.margins: 1
             }
         },
         State {
