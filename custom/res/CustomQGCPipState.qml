@@ -134,6 +134,23 @@ Item {
                 anchors.margins: 1
             }
         },
+         State {
+            name: dockedStateUpper
+
+            AnchorChanges {
+                target: _clientControl
+                anchors.bottom: pipOverlay.parent.verticalCenter
+                anchors.left:   pipOverlay.parent.left
+                anchors.right:  pipOverlay.parent.right
+            }
+
+            PropertyChanges {
+                target: _clientControl
+                z:      pipOverlay.fullZOrder
+                height: pipOverlay.parent.height * 0.60
+                anchors.margins: 1
+            }
+        },
         State {
             name: fullState
 

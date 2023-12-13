@@ -61,48 +61,58 @@ Item {
     }
 
     function _initForItems() {
-        item1.pipState.state = item1.pipState.dockedStateUR
-        item2.pipState.state = item2.pipState.dockedStateUL
-        item3.pipState.state = item3.pipState.dockedStateLower
-        item3.visible = true
-        _fullItem = item2
-        _pipOrWindowItem = item1
-        var item1IsFull = false
-        // var item1IsFull = QGroundControl.loadBoolGlobalSetting(item1IsFullSettingsKey, true)
-        // if (item1 && item2) {
-            // item1.pipState.state = item1IsFull ? item1.pipState.fullState : item1.pipState.pipState
-            // item2.pipState.state = item1IsFull ? item2.pipState.pipState : item2.pipState.fullState
-            // _fullItem = item1IsFull ? item1 : item2
-            // _pipOrWindowItem = item1IsFull ? item2 : item1
-        // } else {
-            // item1.pipState.state = item1.pipState.fullState
-            // _fullItem = item1
-            // _pipOrWindowItem = null
-            // item1.visible = true
-        // }
+        // item1.pipState.state = item1.pipState.dockedStateUR
+        // item2.pipState.state = item2.pipState.dockedStateUL
+        // item3.pipState.state = item3.pipState.dockedStateLower
+        // item3.visible = true
+        // _fullItem = item2
+        // _pipOrWindowItem = item1
+        // var item1IsFull = false
+        var item1IsFull = QGroundControl.loadBoolGlobalSetting(item1IsFullSettingsKey, true)
+        if (item1 && item2) {
+            item1.pipState.state = item1IsFull ? item1.pipState.fullState : item1.pipState.pipState
+            item2.pipState.state = item1IsFull ? item2.pipState.pipState : item2.pipState.fullState
+            _fullItem = item1IsFull ? item1 : item2
+            _pipOrWindowItem = item1IsFull ? item2 : item1
+        } else if (item3.pipState.dockedStateLower) {
+            item1.pipState.state = item1.pipState.dockedStateUpper
+            _fullItem = item1
+            _pipOrWindowItem = null
+            item1.visible = true
+        }
+        else {
+            item1.pipState.state = item1.pipState.fullState
+            _fullItem = item1
+            _pipOrWindowItem = null
+            item1.visible = true
+        }
         _setPipIsExpanded(QGroundControl.loadBoolGlobalSetting(_pipExpandedSettingsKey, true))
     }
 
     function _swapPip() {
         var item1IsFull = false
-        if (item1.pipState.state === item1.pipState.fullState) {
-            item1.pipState.state = item1.pipState.pipState
-            item2.pipState.state = item2.pipState.fullState
-            item3.visible = false
-            _fullItem = item2
-            _pipOrWindowItem = item1
-            item1IsFull = false
-        } else if (item1.pipState.state === item1.pipState.pipState) {
-            item1.pipState.state = item1.pipState.dockedStateL
-            item2.pipState.state = item2.pipState.dockedStateR
-            item3.visible = false
-            _fullItem = item2
-            _pipOrWindowItem = item1
-            item1IsFull = false
+        // TODO: Figure out what happens when the camera feed is disabled
+        // Add if statement to make sure pip can't be swapped when in docked mode
+        if (item3.pipState.state !== item3.pipState.dockedStateLower) {
+            if (item1.pipState.state === item1.pipState.fullState) {
+                item1.pipState.state = item1.pipState.pipState
+                item2.pipState.state = item2.pipState.fullState
+                _fullItem = item2
+                _pipOrWindowItem = item1
+                item1IsFull = false
+            } 
+            else {
+                item1.pipState.state = item1.pipState.fullState
+                item2.pipState.state = item2.pipState.pipState
+                _fullItem = item1
+                _pipOrWindowItem = item2
+                item1IsFull = true
+            }
+            QGroundControl.saveBoolGlobalSetting(item1IsFullSettingsKey, item1IsFull)
         }
-        else if (item1.pipState.state === item1.pipState.dockedStateL) {
-                        item1.pipState.state = item1.pipState.dockedStateUR
-            item2.pipState.state = item2.pipState.dockedStateUL
+        else if (item1.pipState.state === item1.pipState.dockedStateUR) {
+            item1.pipState.state = item1.pipState.dockedStateUL
+            item2.pipState.state = item2.pipState.dockedStateUR
             item3.pipState.state = item3.pipState.dockedStateLower
             item3.visible = true
             _fullItem = item2
@@ -110,6 +120,20 @@ Item {
             item1IsFull = false
         }
         else {
+            item1.pipState.state = item1.pipState.dockedStateUR
+            item2.pipState.state = item2.pipState.dockedStateUL
+            item3.pipState.state = item3.pipState.dockedStateLower
+            item3.visible = true
+            _fullItem = item2
+            _pipOrWindowItem = item1
+            item1IsFull = false
+        }
+        
+    }
+
+    function _swapDock() {
+        var item1IsFull = false
+        if (item1.pipState.state === item1.pipState.dockedStateUR) {
             item1.pipState.state = item1.pipState.fullState
             item2.pipState.state = item2.pipState.pipState
             item3.visible = false
@@ -117,8 +141,56 @@ Item {
             _pipOrWindowItem = item2
             item1IsFull = true
         }
+        else {
+            item1.pipState.state = item1.pipState.dockedStateUR
+            item2.pipState.state = item2.pipState.dockedStateUL
+            item3.pipState.state = item3.pipState.dockedStateLower
+            item3.visible = true
+            _fullItem = item2
+            _pipOrWindowItem = item1
+            item1IsFull = false
+        }
         QGroundControl.saveBoolGlobalSetting(item1IsFullSettingsKey, item1IsFull)
     }
+
+    // TODO: Add 50/50 mode
+    // TODO: Also add top bottom mode
+    // function _swapPip() {
+    //     var item1IsFull = false
+    //     if (item1.pipState.state === item1.pipState.fullState) {
+    //         item1.pipState.state = item1.pipState.pipState
+    //         item2.pipState.state = item2.pipState.fullState
+    //         item3.visible = false
+    //         _fullItem = item2
+    //         _pipOrWindowItem = item1
+    //         item1IsFull = false
+    //     } else if (item1.pipState.state === item1.pipState.pipState) {
+    //         item1.pipState.state = item1.pipState.dockedStateL
+    //         item2.pipState.state = item2.pipState.dockedStateR
+    //         item3.visible = false
+    //         _fullItem = item2
+    //         _pipOrWindowItem = item1
+    //         item1IsFull = false
+    //     }
+    //     else if (item1.pipState.state === item1.pipState.dockedStateL) {
+    //                     item1.pipState.state = item1.pipState.dockedStateUR
+    //         item2.pipState.state = item2.pipState.dockedStateUL
+    //         item3.pipState.state = item3.pipState.dockedStateLower
+    //         item3.visible = true
+    //         _fullItem = item2
+    //         _pipOrWindowItem = item1
+    //         item1IsFull = false
+    //     }
+    //     else {
+    //         item1.pipState.state = item1.pipState.fullState
+    //         item2.pipState.state = item2.pipState.pipState
+    //         item3.visible = false
+    //         _fullItem = item1
+    //         _pipOrWindowItem = item2
+    //         item1IsFull = true
+    //     }
+    //     QGroundControl.saveBoolGlobalSetting(item1IsFullSettingsKey, item1IsFull)
+    // }
 
     function _setPipIsExpanded(isExpanded) {
         QGroundControl.saveBoolGlobalSetting(_pipExpandedSettingsKey, isExpanded)

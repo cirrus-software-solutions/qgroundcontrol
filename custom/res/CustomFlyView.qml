@@ -169,7 +169,7 @@ Item {
 
                 Text {
                     anchors.centerIn: parent
-                    text: "Title"
+                    text: "QGC Logs"
                     color: "white"
                     font.bold: true
                 }
@@ -192,13 +192,39 @@ Item {
                 }
                 color: "#333333"
 
-                Item {
-                    anchors.fill: parent
-                    Text {
-                        anchors.centerIn: parent
-                        text: "Dynamic content"
-                        color: "white"
+
+                Component {
+                    id: delegateItem
+                    Rectangle {
+                        color:  index % 2 == 0 ? qgcPal.window : qgcPal.windowShade
+                        height: Math.round(ScreenTools.defaultFontPixelHeight * 0.5 + field.height)
+                        width:  listview.width
+
+                        QGCLabel {
+                            id:         field
+                            text:       display
+                            width:      parent.width
+                            wrapMode:   Text.Wrap
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
                     }
+                }
+
+
+                QGCListView {
+                    Component.onCompleted: {
+                        loaded = true
+                    }
+                    anchors.top:     parent.top
+                    anchors.left:    parent.left
+                    anchors.right:   parent.right
+                    anchors.bottom:  followTail.top
+                    anchors.fill: parent
+                    anchors.bottomMargin: ScreenTools.defaultFontPixelWidth
+                    clip:            true
+                    id:              listview
+                    model:           debugMessageModel
+                    delegate:        delegateItem
                 }
             }
         }
@@ -327,7 +353,7 @@ Item {
 
                 Text {
                     anchors.centerIn: parent
-                    text: "Title"
+                    text: "Mavlink Messages"
                     color: "white"
                     font.bold: true
                 }
@@ -352,10 +378,70 @@ Item {
 
                 Item {
                     anchors.fill: parent
-                    Text {
-                        anchors.centerIn: parent
-                        text: "Dynamic content"
-                        color: "white"
+                                    Column {
+                    id:         mavStatusColumn
+                    width:      gcsColumn.width
+                    spacing:    _columnSpacing
+                    anchors.centerIn: parent
+                    Row {
+                        spacing:    ScreenTools.defaultFontPixelWidth
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        QGCLabel {
+                            width:              _labelWidth
+                            text:               qsTr("Total messages sent (computed):")
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                        QGCLabel {
+                            width:              _valueWidth
+                            text:               globals.activeVehicle ? globals.activeVehicle.mavlinkSentCount : qsTr("Not Connected")
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
+                    //-----------------------------------------------------------------
+                    Row {
+                        spacing:    ScreenTools.defaultFontPixelWidth
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        QGCLabel {
+                            width:              _labelWidth
+                            text:               qsTr("Total messages received:")
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                        QGCLabel {
+                            width:              _valueWidth
+                            text:               globals.activeVehicle ? globals.activeVehicle.mavlinkReceivedCount : qsTr("Not Connected")
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
+                    //-----------------------------------------------------------------
+                    Row {
+                        spacing:    ScreenTools.defaultFontPixelWidth
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        QGCLabel {
+                            width:              _labelWidth
+                            text:               qsTr("Total message loss:")
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                        QGCLabel {
+                            width:              _valueWidth
+                            text:               globals.activeVehicle ? globals.activeVehicle.mavlinkLossCount : qsTr("Not Connected")
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
+                    //-----------------------------------------------------------------
+                    Row {
+                        spacing:    ScreenTools.defaultFontPixelWidth
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        QGCLabel {
+                            width:              _labelWidth
+                            text:               qsTr("Loss rate:")
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                        QGCLabel {
+                            width:              _valueWidth
+                            text:               globals.activeVehicle ? globals.activeVehicle.mavlinkLossPercent.toFixed(0) + '%' : qsTr("Not Connected")
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
                     }
                 }
             }
@@ -368,21 +454,46 @@ Item {
         id: videoControl
     }
 
-    Button {
-        text: "Swap Picture Mode"
-        onClicked: _pipOverlay._swapPip()
+    Rectangle{
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
-        width: parent.width * 0.1
-        height: parent.height * 0.05
-        anchors.margins:    _toolsMargin
-        palette.buttonText: "white"
-        background: Rectangle {
-                color: parent.down ? "#fff291" :
-                        (parent.hovered ? "#585d83" : "#222222")
-                radius: 3
+        width: parent.width * 0.4
+        height: parent.height * 0.06
+
+        Button {
+            text: "Swap Picture Mode"
+            onClicked: _pipOverlay._swapPip()
+            anchors.left: parent.left
+            anchors.verticalCenter: parent.verticalCenter
+            width: parent.width * 0.48
+            height: parent.height *0.9
+            anchors.margins:    _toolsMargin
+            palette.buttonText: "white"
+            background: Rectangle {
+                    color: parent.down ? "#fff291" :
+                            (parent.hovered ? "#585d83" : "#222222")
+                    radius: 3
+            }
+        }
+
+        Button {
+            text: "Switch Dock Mode"
+            onClicked: _pipOverlay._swapDock()
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            width: parent.width * 0.48
+            height: parent.height * 0.9
+            anchors.margins:    _toolsMargin
+            palette.buttonText: "white"
+            background: Rectangle {
+                    color: parent.down ? "#fff291" :
+                            (parent.hovered ? "#585d83" : "#222222")
+                    radius: 3
+        }
         }
     }
+
+
 
     // Picture in picture mode
     QGCPipOverlay {
