@@ -19,6 +19,7 @@ Item {
     readonly property string dockedStateUL:         "dockedUL"
     readonly property string dockedStateUR:         "dockedUR"
     readonly property string dockedStateLower:      "dockedLower"
+    readonly property string dockedStateUpper:      "dockedUpper"
     readonly property string dockedStateL:          "dockedL"
     readonly property string dockedStateR:          "dockedR"
     readonly property string fullState:             "full"
@@ -139,7 +140,6 @@ Item {
 
             AnchorChanges {
                 target: _clientControl
-                anchors.bottom: pipOverlay.parent.verticalCenter
                 anchors.left:   pipOverlay.parent.left
                 anchors.right:  pipOverlay.parent.right
             }

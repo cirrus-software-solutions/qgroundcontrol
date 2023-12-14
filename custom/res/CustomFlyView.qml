@@ -35,6 +35,8 @@ Item {
     // These should only be used by MainRootWindow
     property var planController:    _planController
     property var guidedController:  _guidedController
+    property real _labelWidth:          ScreenTools.defaultFontPixelWidth * 28
+    property real _valueWidth:          ScreenTools.defaultFontPixelWidth * 24
 
     PlanMasterController {
         id:                     _planController
@@ -145,9 +147,11 @@ Item {
         mapName:                "FlightDisplayView"
     }
 
+// Camera view needs to disappear when video stream disabled
+
     Rectangle {
         id:                     mapControl2
-        property bool pipMode:                !_mainWindowIsMap
+        property bool pipMode:  !_mainWindowIsMap
         color: "white"
         property Item pipState: _pipState
         QGCPipState {
@@ -155,6 +159,7 @@ Item {
         pipOverlay: _pipOverlay
         isDark:     _isFullWindowItemDark
         }
+        
         Rectangle {
             id: leftPanel
             width: parent.width /3 - 10
@@ -212,13 +217,10 @@ Item {
 
 
                 QGCListView {
-                    Component.onCompleted: {
-                        loaded = true
-                    }
                     anchors.top:     parent.top
                     anchors.left:    parent.left
                     anchors.right:   parent.right
-                    anchors.bottom:  followTail.top
+                    anchors.bottom:  parent.bottom
                     anchors.fill: parent
                     anchors.bottomMargin: ScreenTools.defaultFontPixelWidth
                     clip:            true
@@ -322,17 +324,18 @@ Item {
 
                     function recalcXPosition() {
                         // First try centered
-                        var halfRootWidth   = _root.width / 2
-                        var halfPanelWidth  = telemetryPanel.width / 2
-                        var leftX           = (halfRootWidth - halfPanelWidth) - _toolsMargin
-                        var rightX          = (halfRootWidth + halfPanelWidth) + _toolsMargin
-                        if (leftX >= parentToolInsets.leftEdgeBottomInset || rightX <= parentToolInsets.rightEdgeBottomInset ) {
-                            // It will fit in the horizontalCenter
-                            return halfRootWidth - halfPanelWidth
-                        } else {
-                            // Anchor to left edge
-                            return parentToolInsets.leftEdgeBottomInset + _toolsMargin
-                        }
+                        // var halfRootWidth   = _root.width / 2
+                        // var halfPanelWidth  = telemetryPanel.width / 2
+                        // var leftX           = (halfRootWidth - halfPanelWidth) - _toolsMargin
+                        // var rightX          = (halfRootWidth + halfPanelWidth) + _toolsMargin
+                        // if (leftX >= parentToolInsets.leftEdgeBottomInset || rightX <= parentToolInsets.rightEdgeBottomInset ) {
+                        //     // It will fit in the horizontalCenter
+                        //     return halfRootWidth - halfPanelWidth
+                        // } else {
+                        //     // Anchor to left edge
+                        //     return parentToolInsets.leftEdgeBottomInset + _toolsMargin
+                        // }
+                        return 5
                     }
                 }
                 }
@@ -367,6 +370,7 @@ Item {
             }
 
             Rectangle {
+
                 anchors {
                     left: parent.left
                     right: parent.right
@@ -380,8 +384,8 @@ Item {
                     anchors.fill: parent
                                     Column {
                     id:         mavStatusColumn
-                    width:      gcsColumn.width
-                    spacing:    _columnSpacing
+                    width:      parent.width
+                    spacing:    ScreenTools.defaultFontPixelHeight * 0.25
                     anchors.centerIn: parent
                     Row {
                         spacing:    ScreenTools.defaultFontPixelWidth
@@ -491,6 +495,22 @@ Item {
                     radius: 3
         }
         }
+
+        Button {
+            text: "Switch Dock Mode"
+            onClicked: _pipOverlay._swapDock()
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            width: parent.width * 0.48
+            height: parent.height * 0.9
+            anchors.margins:    _toolsMargin
+            palette.buttonText: "white"
+            background: Rectangle {
+                    color: parent.down ? "#fff291" :
+                            (parent.hovered ? "#585d83" : "#222222")
+                    radius: 3
+        }
+        }
     }
 
 
@@ -507,8 +527,8 @@ Item {
         item3:                  mapControl2
         fullZOrder:             _fullItemZorder
         pipZOrder:              _pipItemZorder
-        // show:                   !QGroundControl.videoManager.fullScreen && (videoControl.pipState.state === videoControl.pipState.pipState || mapControl.pipState.state === mapControl.pipState.pipState)
-        show:                   true
+        show:                   !QGroundControl.videoManager.fullScreen && (videoControl.pipState.state === videoControl.pipState.pipState || mapControl.pipState.state === mapControl.pipState.pipState)
+        // show:                   true
                                
     }
 }

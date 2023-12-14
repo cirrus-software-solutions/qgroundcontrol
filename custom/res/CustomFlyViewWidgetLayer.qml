@@ -161,7 +161,7 @@ Item {
         id:                 telemetryPanel
         x:                  recalcXPosition()
         anchors.margins:    _toolsMargin
-        visible: mapControl.pipState.state !== mapControl.pipState.dockedStateUR && mapControl.pipState.state !== mapControl.pipState.dockedStateUL
+        visible: mapControl.pipState.state !== mapControl.pipState.dockedStateUR && mapControl.pipState.state !== mapControl.pipState.dockedStateUL && mapControl.pipState.state !== mapControl.pipState.dockedStateUpper
 
         // States for custom layout support
         states: [
