@@ -83,7 +83,7 @@ Item {
             _fullItem = item2
             _pipOrWindowItem = item1
             item1IsFull = false
-        }  else {
+        } else {
             item1.pipState.state = item1.pipState.fullState
             item2.pipState.state = item2.pipState.pipState
             _fullItem = item1
