@@ -463,6 +463,7 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         width: parent.width * 0.4
         height: parent.height * 0.06
+        color: "transparent"
 
         Button {
             text: "Swap Picture Mode"
