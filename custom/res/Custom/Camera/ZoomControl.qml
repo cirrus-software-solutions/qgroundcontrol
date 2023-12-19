@@ -63,8 +63,8 @@ Item {
         }
     }
 
-    Button {
         id: zoomInButton
+    Button {
         flat: true
 
         anchors.left: zoomLevelVisible ? zoomStatusItem.horizontalCenter : _root.left

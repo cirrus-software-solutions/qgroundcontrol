@@ -18,7 +18,7 @@ import QGroundControl.Controls      1.0
 import QGroundControl.Palette       1.0
 import QGroundControl.ScreenTools   1.0
 
-import Custom.Widgets 1.0
+import S3Uploader                   1.0
 
 Item {
     property var parentToolInsets                       // These insets tell you what screen real estate is available for positioning the controls in your overlay
@@ -102,6 +102,21 @@ Item {
             }
         }
     }
+
+// This is an example of how to integrate the custom c++ code in QML
+    Button {
+        onPressed: {
+            var res = S3Uploader.upload();
+            console.log(res)
+        }
+        text: "S3 Upload"
+        anchors.left: parent.left
+        anchors.verticalCenter: parent.verticalCenter
+        width: parent.width*0.1
+        height: parent.height*0.1
+
+    }
+
     Rectangle {
         id:                         headingIndicator
         height:                     ScreenTools.defaultFontPixelHeight
@@ -218,11 +233,5 @@ Item {
         radius:                 height * 0.5
         color:                  qgcPal.windowShade
 
-        CustomAttitudeWidget {
-            size:               parent.height * 0.95
-            vehicle:            _activeVehicle
-            showHeading:        false
-            anchors.centerIn:   parent
-        }
     }
 }
