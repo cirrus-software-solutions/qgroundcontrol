@@ -20,6 +20,8 @@ Item {
     readonly property string dockedStateUR:         "dockedUR"
     readonly property string dockedStateLower:      "dockedLower"
     readonly property string dockedStateUpper:      "dockedUpper"
+    readonly property string splitLeft:             "splitLeft"
+    readonly property string splitRight:            "splitRight"
     readonly property string dockedStateL:          "dockedL"
     readonly property string dockedStateR:          "dockedR"
     readonly property string fullState:             "full"
@@ -115,6 +117,40 @@ Item {
                 z:      pipOverlay.fullZOrder
                 anchors.margins: 1
                 height: pipOverlay.parent.height * 0.6
+            }
+        },
+        State {
+            name: splitLeft
+
+            AnchorChanges {
+                target: _clientControl
+                anchors.top: pipOverlay.parent.top
+                anchors.bottom: pipOverlay.parent.bottom
+                anchors.left:   pipOverlay.parent.left
+                anchors.right:  pipOverlay.parent.horizontalCenter
+            }
+
+            PropertyChanges {
+                target: _clientControl
+                z:      pipOverlay.fullZOrder
+                anchors.margins: 1
+            }
+        },
+        State {
+            name: splitRight
+
+            AnchorChanges {
+                target: _clientControl
+                anchors.top: pipOverlay.parent.top
+                anchors.bottom: pipOverlay.parent.bottom
+                anchors.left:  pipOverlay.parent.horizontalCenter
+                anchors.right:   pipOverlay.parent.right
+            }
+
+            PropertyChanges {
+                target: _clientControl
+                z:      pipOverlay.fullZOrder
+                anchors.margins: 1
             }
         },
         State {

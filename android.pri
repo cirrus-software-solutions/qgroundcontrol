@@ -7,6 +7,7 @@ ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 exists($$PWD/custom/android) {
     message("Merging $$PWD/custom/android/ -> $$PWD/android/")
 
+# Commented out to allow for custom android build
 #    ANDROID_PACKAGE_SOURCE_DIR = $$OUT_PWD/ANDROID_PACKAGE_SOURCE_DIR
 #    android_source_dir_target.target = android_source_dir
 #    PRE_TARGETDEPS += $$android_source_dir_target.target
