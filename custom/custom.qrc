@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="custom/img">
+        <file alias="CustomAppIcon.png">res/Images/CustomAppIcon.png</file>
+    </qresource>
+    <qresource prefix="/qml">
+        <file alias="QGroundControl/FlightDisplay/FlyView.qml">res/CustomFlyView.qml</file>
+        <file alias="QGroundControl/FlightDisplay/FlyViewWidgetLayer.qml">res/CustomFlyViewWidgetLayer.qml</file>
+        <file alias="QGroundControl/Controls/QGCPipState.qml">res/CustomQGCPipState.qml</file>
+        <file alias="QGroundControl/Controls/QGCPipOverlay.qml">res/CustomQGCPipOverlay.qml</file>
+    </qresource>
+</RCC>
